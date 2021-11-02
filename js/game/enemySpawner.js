@@ -28,7 +28,7 @@ function showGameOverScreen(endCount) {
 export default class EnemySpawner {
     constructor(physWorld, constructFunction, onGameOver) {
         // Preload font for paragraph tags.
-        this.displayFont = loadFont('../assets/Larceny.ttf');
+        this.displayFont = loadFont('./assets/Larceny.ttf');
 
         this.createEnemy = constructFunction;
         this.enemies = [];
