@@ -36,11 +36,11 @@ export default class Scene {
         ];
 
         Promise.all([
-            loadImagePromise("../assets/resurrect-64-1x.png"),
-            loadModelPromise("../assets/island.obj"),
-            loadModelPromise("../assets/island_fence_collide.obj"),
-            loadModelPromise("../assets/basicCharacter.obj"),
-            loadImagePromise("../assets/skin_exclusiveZombie.png"),
+            loadImagePromise("./assets/resurrect-64-1x.png"),
+            loadModelPromise("./assets/island.obj"),
+            loadModelPromise("./assets/island_fence_collide.obj"),
+            loadModelPromise("./assets/basicCharacter.obj"),
+            loadImagePromise("./assets/skin_exclusiveZombie.png"),
         ])
             .then(assets => {
                 const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin] = assets;
