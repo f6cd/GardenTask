@@ -1,0 +1,61 @@
+@font-face {
+    font-family: 'Larceny';
+    src: url('assets/Larceny.ttf') format('ttf');
+}
+
+html,
+body {
+    margin: 0px 0px 0px 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.overlay {
+    width: 100%;
+    position: absolute;
+    background: none;
+    top: 0;
+    left: 0;
+    margin: 0 0 0 0;
+    height: 0px;
+}
+
+#overlay {
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    font-family: Larceny;
+    font-size: 5em;
+}
+
+#textBanner {
+    position: absolute;
+    width: 100%;
+}
+
+#gameOver {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(0,0,10,1);
+}
+
+#gameOverInfo {
+    margin: 0 0 0 0;
+    font-size: 10vh;
+    color: red;
+}
+
+#gameOverTitle {
+    color: red;
+    font-size: 40vh;
+    margin: 0 0 0 0;
+}
+
+#container {
+    position: relative;
+}
