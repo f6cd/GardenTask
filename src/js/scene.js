@@ -1,4 +1,4 @@
-import * as CANNON from "./vendor/cannon-es.js";
+import { Vec3 } from "./vendor/cannon-es.js";
 
 import CylinderCollider from "./physics/cylinderCollider.js";
 import Enemy from "./game/enemy.js";
@@ -26,13 +26,13 @@ export default class Scene {
             // Player object and collision.
             new Player(
                 this.phys,
-                new CANNON.Vec3(10, 0, 0),
+                new Vec3(10, 0, 0),
                 this.rover,
             ),
             // Ground collision.
-            new PlaneCollider(this.phys, new CANNON.Vec3()),
+            new PlaneCollider(this.phys, new Vec3()),
             // Centre tree collision.
-            new CylinderCollider(this.phys, 0, CANNON.Vec3.ZERO, 3, 20),
+            new CylinderCollider(this.phys, 0, Vec3.ZERO, 3, 20),
         ];
 
         Promise.all([
@@ -47,7 +47,7 @@ export default class Scene {
 
                 this.objects.push(
                     // Terrain and complex collision - i.e. fences, props, etc.
-                    new Terrain(this.phys, CANNON.Vec3.ZERO, islandModel, islandComplexCollision, paletteTexture)
+                    new Terrain(this.phys, Vec3.ZERO, islandModel, islandComplexCollision, paletteTexture)
                 );
 
                 this.objects.push(

@@ -1,5 +1,3 @@
-import * as CANNON from "../vendor/cannon-es.js";
-
 // Stolen from three.js: https://github.com/mrdoob/three.js/blob/master/src/math/Matrix4.js#L691.
 function composeMatrixFromTransformProperties(position, quaternion, scale) {
     const te = [];
@@ -35,27 +33,25 @@ function composeMatrixFromTransformProperties(position, quaternion, scale) {
     return te;
 }
 
-export default class GenericPhysObject {
-    constructor(colShape, mass, pos) {
-        const body = new CANNON.Body({
-            mass: mass
-        });
-        body.addShape(colShape);
-        body.position.copy(pos);
-        body.linearDamping = 0.4;
-        this.body = body;
+// Is this even an optimization?
+const STATIC_1X1X1 = [1, 1, 1];
 
-        this.body.updateSolveMassProperties();
-        this._cachedTransformMatrix = this.getTransformMatrix();
+/**
+ * Given a body, track its transform and convert into a matrix for drawing.
+ * This is a class, as it allows for optimizations to be added (i.e. not recalculating for static bodies).
+ */
+export default class BodyMatrixTracker {
+    constructor(trackingBody) {
+        this._body = trackingBody;
     }
 
-    getTransformMatrix() {
-        if (this.body.mass > 0 || !this._cachedTransformMatrix) {
+    getMatrix() {
+        if (this._body.mass > 0 || !this._cachedTransformMatrix) {
             // Small optimization; only re-calculate transform matrix if we're not a static body.
             this._cachedTransformMatrix = composeMatrixFromTransformProperties(
-                this.body.position.toArray(),
-                this.body.quaternion.toArray(),
-                [1, 1, 1],
+                this._body.position.toArray(),
+                this._body.quaternion.toArray(),
+                STATIC_1X1X1,
             );
         }
 

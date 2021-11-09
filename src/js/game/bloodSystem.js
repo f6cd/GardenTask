@@ -1,11 +1,11 @@
-import * as CANNON from "../vendor/cannon-es.js";
+import { Vec3 } from "../vendor/cannon-es";
 
 const MAX_PARTICLES = 200;
-const GLOBAL_ACCELERATION = new CANNON.Vec3(0, 0.002);
+const GLOBAL_ACCELERATION = new Vec3(0, 0.002);
 
 class Particle {
     constructor(position) {
-        this.velocity = new CANNON.Vec3(random(-1, 1), 0, random(-1, 1)).scale(.1);
+        this.velocity = new Vec3(random(-1, 1), 0, random(-1, 1)).scale(.1);
         this.position = position.clone();
         this.lifespan = 100;
     }

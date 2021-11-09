@@ -1,10 +1,10 @@
-import * as CANNON from "../vendor/cannon-es.js";
+import { World, NaiveBroadphase } from "../vendor/cannon-es.js";
 
 export default class PhysWorld {
     constructor() {
-        const world = new CANNON.World();
+        const world = new World();
         world.gravity.set(0, 10, 0);
-        world.broadphase = new CANNON.NaiveBroadphase();
+        world.broadphase = new NaiveBroadphase();
         world.solver.iterations = 20;
 
         // Tweak contact properties.
@@ -18,14 +18,14 @@ export default class PhysWorld {
     }
 
     update() {
-        this.world.step(1/60);
+        this.world.step(1 / 60);
     }
 
-    add(physObject) {
-        this.world.addBody(physObject.body);
+    add(body) {
+        this.world.addBody(body);
     }
 
-    remove(physObject) {
-        this.world.removeBody(physObject.body);
+    remove(body) {
+        this.world.removeBody(body);
     }
 }

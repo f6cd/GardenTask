@@ -1,13 +1,12 @@
-import GenericPhysObject from "./genericPhysObject.js";
-import * as CANNON from "../vendor/cannon-es.js";
+import { Cylinder } from "../vendor/cannon-es.js";
+import createGenericBody from "./createGenericBody.js";
 
 export default class CylinderCollider {
     constructor(physWorld, mass, pos, radius, height) {
-        const box = new CANNON.Cylinder(radius, radius, height, 12);
+        const box = new Cylinder(radius, radius, height, 12);
 
-        const obj = new GenericPhysObject(box, mass, pos);
+        const body = new createGenericBody(box, mass, pos);
 
-        physWorld.add(obj);
-        this.physObject = obj;
+        physWorld.add(body);
     }
 }

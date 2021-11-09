@@ -1,8 +1,9 @@
-import * as CANNON from "../vendor/cannon-es.js";
-import GenericPhysObject from "../physics/genericPhysObject.js";
+import BodyMatrixTracker from "../physics/bodyMatrixTracker.js";
+import createGenericBody from "../physics/createGenericBody.js";
+import { Sphere, Vec3 } from "../vendor/cannon-es.js";
 
 const PROJECTILE_RADIUS = .2;
-const projectileShape = new CANNON.Sphere(PROJECTILE_RADIUS);
+const projectileShape = new Sphere(PROJECTILE_RADIUS);
 
 const MAX_PROJECTILES = 12;
 
@@ -18,33 +19,36 @@ export default class Shooter {
 
     /**
      * Fire a projectile, given an origin and direction.
-     * @param {CANNON.Vec3} origin 
-     * @param {CANNON.Vec3} direction 
+     * @param {Vec3} origin 
+     * @param {Vec3} direction 
      */
     fire(origin, direction, playerVelocity) {
         // TODO: Simply GCing old projectiles is inefficient. Disconnect events and re-use objects?
         if (this.projectiles.length > MAX_PROJECTILES)
-            this.physWorld.remove(this.projectiles.shift());
+            this.physWorld.remove(this.projectiles.shift().body);
 
-        const obj = new GenericPhysObject(
+        const body = new createGenericBody(
             projectileShape,
             PROJECTILE_MASS,
             origin
         );
 
         direction.normalize();
-        obj.body.velocity = obj.body.velocity.vadd(direction.scale(FIRE_POWER));
-        obj.body.position = origin.vadd(obj.body.velocity.scale(PLAYER_ORIGIN_OFFSET));
-        obj.body.velocity.vadd(playerVelocity.scale(.01), obj.body.velocity);
+        body.velocity = body.velocity.vadd(direction.scale(FIRE_POWER));
+        body.position = origin.vadd(body.velocity.scale(PLAYER_ORIGIN_OFFSET));
+        body.velocity.vadd(playerVelocity.scale(.01), body.velocity);
 
-        this.physWorld.add(obj);
-        this.projectiles.push(obj);
+        this.physWorld.add(body);
+        this.projectiles.push({
+            body: body,
+            matrixTracker: new BodyMatrixTracker(body),
+        });
     }
 
     draw() {
         this.projectiles.forEach(projectile => {
             push();
-            applyMatrix(projectile.getTransformMatrix());
+            applyMatrix(projectile.matrixTracker.getMatrix());
             fill(255, 0, 255);
             sphere(PROJECTILE_RADIUS);
             pop();

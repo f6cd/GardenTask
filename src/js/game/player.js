@@ -1,52 +1,54 @@
-import GenericPhysObject from "../physics/genericPhysObject.js";
-import * as CANNON from "../vendor/cannon-es.js";
+import createGenericBody from "../physics/createGenericBody.js";
+import { Sphere, Vec3 } from "../vendor/cannon-es.js";
 import Shooter from "./shooter.js";
 
 const PLAYER_MASS = 30;
 const PLAYER_RADIUS = 72 / 64;
 
+const PLAYER_SHAPE = new Sphere(PLAYER_RADIUS);
+
 export default class Player {
-    constructor(physWorld, pos, rover) {
-        this.rover = rover;
+    constructor(physWorld, pos, camera) {
+        this._camera = camera;
 
         // Dimensions stolen from the source engine: https://developer.valvesoftware.com/wiki/Player_Entity.
-        const playerShape = new CANNON.Sphere(PLAYER_RADIUS);
-        const obj = new GenericPhysObject(
-            playerShape,
+        const body = new createGenericBody(
+            PLAYER_SHAPE,
             PLAYER_MASS,
-            new CANNON.Vec3(pos.x, pos.y - PLAYER_RADIUS * 2, pos.z + PLAYER_RADIUS)
+            new Vec3(pos.x, pos.y - PLAYER_RADIUS * 2, pos.z + PLAYER_RADIUS)
         );
-        obj.body.fixedRotation = true;
-        obj.body.allowSleep = false;
-        obj.body.linearDamping = 0;
-        obj.body.angularDamping = 0;
+        body.fixedRotation = true;
+        body.allowSleep = false;
+        body.linearDamping = 0;
+        body.angularDamping = 0;
 
-        obj.body.updateMassProperties();
+        body.updateMassProperties();
 
-        physWorld.add(obj);
-        this.physObject = obj;
+        physWorld.add(body);
+        this._body = body;
 
         // Shooting logic.
-        this.shooter = new Shooter(physWorld);
+        this._shooter = new Shooter(physWorld);
         window.addEventListener('click', () => {
-            this.shooter.fire(this.physObject.body.position, this.rover.forward, obj.body.velocity);
+            // Shoot a projectile.
+            this._shooter.fire(this._body.position, this._camera.forward, body.velocity);
         });
 
         // Player controls.
-        this._forward = new CANNON.Vec3();
-        this._right = new CANNON.Vec3();
+        this._forward = new Vec3();
+        this._right = new Vec3();
     }
 
     update() {
         // Compute forward vector. Only rotation about the Y axis!
         // this._forward.set(Math.cos(this.rover.pan), 0, Math.sin(this.rover.pan));
-        this._forward.set(Math.cos(-this.rover.yRotation), 0, Math.sin(-this.rover.yRotation));
+        this._forward.set(Math.cos(-this._camera.yRotation), 0, Math.sin(-this._camera.yRotation));
         this._forward.normalize();
         // Compute the right vector. Use constant up vector.
-        this._forward.cross(CANNON.Vec3.UNIT_Y, this._right);
+        this._forward.cross(Vec3.UNIT_Y, this._right);
 
-        const playerVelocity = this.physObject.body.velocity;
-        playerVelocity.set(0, this.physObject.body.velocity.y, 0);
+        const playerVelocity = this._body.velocity;
+        playerVelocity.set(0, this._body.velocity.y, 0);
 
         if (keyIsDown(87))
             playerVelocity.addScaledVector(1 * deltaTime, this._forward, playerVelocity);
@@ -60,9 +62,9 @@ export default class Player {
     }
 
     draw() {
-        const pos = this.physObject.body.position;
-        this.rover.position.set(pos.x, pos.y - 64 / 64 / 2, pos.z);
+        const pos = this._body.position;
+        this._camera.position.set(pos.x, pos.y - 64 / 64 / 2, pos.z);
 
-        this.shooter.draw();
+        this._shooter.draw();
     }
 }

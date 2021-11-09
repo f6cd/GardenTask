@@ -1,11 +1,11 @@
-import * as CANNON from "../vendor/cannon-es.js";
+import { Vec3 } from "../vendor/cannon-es.js";
 
 const MAX_ENEMIES_START = 2;
 const ENEMY_SPAWN_LOCATIONS = [
-    new CANNON.Vec3(10, 0, -40),
-    new CANNON.Vec3(-20, 0, -40),
-    new CANNON.Vec3(0, 0, 40),
-    new CANNON.Vec3(-10, 0, 50),
+    new Vec3(10, 0, -40),
+    new Vec3(-20, 0, -40),
+    new Vec3(0, 0, 40),
+    new Vec3(-10, 0, 50),
 ];
 
 const CORPSE_DESPAWN_TIME = 2500 * 1;
@@ -39,7 +39,7 @@ export default class EnemySpawner {
         this.killCount = 0;
         updateKillCount(this.killCount);
 
-        this.tempJitter = new CANNON.Vec3();
+        this.tempJitter = new Vec3();
     }
 
     update() {
@@ -54,13 +54,13 @@ export default class EnemySpawner {
                 }
             } else if (!thisEnemy.queuedForDeath) {
                 // If enemy is dead, but not queued or death yet...
-                
+
                 // Horrible hack! Randomly mutating classes is bad. :(
                 thisEnemy.queuedForDeath = true;
 
                 // Destroy enemy after a brief delay, so that we get cool physics and blood particles.
                 setTimeout(() => {
-                    this.physWorld.remove(thisEnemy.physObject);
+                    this.physWorld.remove(thisEnemy._body);
                     this.enemies = this.enemies.filter(a => a != thisEnemy);
                 }, CORPSE_DESPAWN_TIME);
 
