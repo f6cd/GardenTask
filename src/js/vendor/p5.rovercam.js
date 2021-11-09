@@ -19,28 +19,26 @@
  * 20200629 add support for switching between multiple cameras
  * 20200701 v1.1.0 fix registerMethod and allow for p5js instance mode
  * 20200702 v1.1.1 moved pointerLock; added keymap and ocular offsetting
- * 
- * 
- * 
- * !! Heavily modified to use the cannon.js library! Lots of unused code has been removed.
- * 
- * 
- * 
  */
 
-import * as CANNON from "./cannon-es.js";
+/**
+ * Heavily modified to use the cannon.js library!
+ * Lots of unused code has been removed.
+ */
+
+import { Vec3, Quaternion } from "./cannon-es.js";
 
 const CAMERA_NEAR_Z = 0.01;
 const CAMERA_FAR_Z = 250;
 
 export default class RoverCam {
-    constructor() {
+    constructor(canvasRenderer) {
         this.xRotation = 0;
         this.yRotation = 0;
 
-        this.forward = new CANNON.Vec3();
-        this.up = new CANNON.Vec3();
-        this.position = new CANNON.Vec3();
+        this.forward = new Vec3();
+        this.up = new Vec3();
+        this.position = new Vec3();
 
         document.addEventListener('mousemove', (event) => {
             if (!this.pointerLock) return;
@@ -53,12 +51,12 @@ export default class RoverCam {
             this.xRotation = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.xRotation));
         });
 
-        p5.instance._renderer.elt.addEventListener('click', () => {
+        canvasRenderer.elt.addEventListener('click', () => {
             if (!this.pointerLock) {
                 document.body.requestPointerLock();
             }
         });
-        
+
         document.addEventListener('pointerlockchange', () => {
             if (document.pointerLockElement) {
                 this.pointerLock = true;
@@ -70,20 +68,21 @@ export default class RoverCam {
 
     set fov(value) {
         this.fovy = value;
-        this.width = 0; // trigger a perspective call in the draw loop
+        this._cachedWidth = 0; // trigger a perspective call in the draw loop
     }
 
-    // This method is called after the main p5.js draw loop 
     update() {
-        if (p5.instance.width !== this.width || p5.instance.height !== this.height) {
-            perspective(this.fovy, p5.instance.width / p5.instance.height, CAMERA_NEAR_Z, CAMERA_FAR_Z);
-            this.width = p5.instance.width;
-            this.height = p5.instance.height;
+        // 'width' and 'height' are poorly named p5 globals that hold the width+height of the canvas.
+        if (width !== this._cachedWidth || height !== this._cachedHeight) {
+            console.log("perspective");
+            perspective(this.fovy, width / height, CAMERA_NEAR_Z, CAMERA_FAR_Z);
+            this._cachedWidth = width;
+            this._cachedHeight = height;
         }
 
-        const viewQuaternion = new CANNON.Quaternion().setFromEuler(0, this.yRotation, this.xRotation, "XYZ");
-        viewQuaternion.vmult(CANNON.Vec3.UNIT_X, this.forward);
-        viewQuaternion.vmult(CANNON.Vec3.UNIT_Y, this.up);
+        const viewQuaternion = new Quaternion().setFromEuler(0, this.yRotation, this.xRotation, "XYZ");
+        viewQuaternion.vmult(Vec3.UNIT_X, this.forward);
+        viewQuaternion.vmult(Vec3.UNIT_Y, this.up);
 
         const center = this.position.vadd(this.forward);
 

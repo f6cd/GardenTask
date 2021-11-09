@@ -1,19 +1,21 @@
 import Scene from "./scene.js";
-let thisScene = null;
 
 window.setup = function () {
-    const canvas = createCanvas(windowWidth, windowHeight, WEBGL);
-    canvas.parent('sketch-holder');
+    // I didn't want to add this, but webpack excludes globals (like p5) if they're not referenced anywhere!
+    if (!p5) console.error("p5.js not loaded!");
+
+    // Setup canvas
+    const canvasRenderer = createCanvas(windowWidth, windowHeight, WEBGL);
+    canvasRenderer.parent('sketch-holder');
     noStroke();
 
-    thisScene = new Scene();
+    // Setup scene.
+    const thisScene = new Scene(canvasRenderer);
+    
     thisScene.setup();
+    window.draw = () => thisScene.draw();
 };
 
-window.draw = function () {
-    thisScene.draw();
-};
-
-window.windowResized = function() {
+window.windowResized = function () {
     resizeCanvas(windowWidth, windowHeight);
 };

@@ -12,10 +12,10 @@ import Terrain from "./game/terrain.js";
 import { loadModelPromise, loadImagePromise } from "./lib/assets.js";
 
 export default class Scene {
-    constructor() {
+    constructor(canvasRenderer) {
         this.phys = new PhysWorld();
 
-        this.rover = new RoverCam();
+        this.rover = new RoverCam(canvasRenderer);
         this.rover.fov = radians(75);
 
         this.sceneReady = false;
@@ -46,7 +46,7 @@ export default class Scene {
                 const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin] = assets;
 
                 this.objects.push(
-                    // Terrain and complex collision - i.e. fences, props, etc.
+                    // Terrain and complex collision - i.e. fences, flowers.
                     new Terrain(this.phys, Vec3.ZERO, islandModel, islandComplexCollision, paletteTexture)
                 );
 
