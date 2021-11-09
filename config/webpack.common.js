@@ -1,7 +1,5 @@
 const paths = require('./paths');
 
-const common = require('./webpack.common.js');
-
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
@@ -34,7 +32,7 @@ module.exports = {
             },
             {
                 // Load all resources.
-                test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
+                test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
                 use: ['file-loader'],
                 exclude: [paths.assets],
             }
@@ -43,7 +41,6 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: paths.src + "/index.html",
-            inject: true
         }),
         new webpack.ProvidePlugin({
             p5: paths.src + "/js/vendor/p5.js",
