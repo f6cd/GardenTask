@@ -16,11 +16,15 @@ export default class Terrain {
         this._tex = tex;
     }
 
-    draw() {
-        push();
-        applyMatrix(this._matrixTracker.getMatrix());
-        texture(this._tex);
-        model(this._mesh);
-        pop();
+    /**
+     * Draw the object to the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
+        p.push();
+        p.applyMatrix(this._matrixTracker.getMatrix());
+        p.texture(this._tex);
+        p.model(this._mesh);
+        p.pop();
     }
 }

@@ -1,5 +1,5 @@
 import BloodSystem from "./bloodSystem.js";
-import { Box, Vec3 } from "../vendor/cannon-es.js";
+import { Box, Vec3 } from "cannon-es";
 import createGenericBody from "../physics/createGenericBody.js";
 import BodyMatrixTracker from "../physics/bodyMatrixTracker.js";
 
@@ -84,14 +84,18 @@ export default class Enemy {
         if (this.alive) this._updateAI();
     }
 
-    draw() {
-        push();
-        applyMatrix(this._matrixTracker.getMatrix());
-        texture(this.enemySkin);
-        model(this.enemyModel);
-        pop();
+    /**
+     * Draw the object to the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
+        p.push();
+        p.applyMatrix(this._matrixTracker.getMatrix());
+        p.texture(this.enemySkin);
+        p.model(this.enemyModel);
+        p.pop();
 
         // Draw blood system.
-        this.bloodSystem.draw();
+        this.bloodSystem.draw(p);
     }
 }

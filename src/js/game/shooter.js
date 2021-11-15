@@ -1,6 +1,6 @@
 import BodyMatrixTracker from "../physics/bodyMatrixTracker.js";
 import createGenericBody from "../physics/createGenericBody.js";
-import { Sphere, Vec3 } from "../vendor/cannon-es.js";
+import { Sphere, Vec3 } from "cannon-es";
 
 const PROJECTILE_RADIUS = .2;
 const projectileShape = new Sphere(PROJECTILE_RADIUS);
@@ -45,13 +45,17 @@ export default class Shooter {
         });
     }
 
-    draw() {
+    /**
+     * Draw the object to the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
         this.projectiles.forEach(projectile => {
-            push();
-            applyMatrix(projectile.matrixTracker.getMatrix());
-            fill(255, 0, 255);
-            sphere(PROJECTILE_RADIUS);
-            pop();
+            p.push();
+            p.applyMatrix(projectile.matrixTracker.getMatrix());
+            p.fill(255, 0, 255);
+            p.sphere(PROJECTILE_RADIUS);
+            p.pop();
         });
     }
 }

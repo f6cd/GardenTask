@@ -1,11 +1,17 @@
-import { Vec3 } from "../vendor/cannon-es";
+import { Vec3 } from "cannon-es";
+import p5 from "p5";
 
 const MAX_PARTICLES = 200;
 const GLOBAL_ACCELERATION = new Vec3(0, 0.002);
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_number_between_two_values
+function getRandomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 class Particle {
     constructor(position) {
-        this.velocity = new Vec3(random(-1, 1), 0, random(-1, 1)).scale(.1);
+        this.velocity = new Vec3(getRandomInRange(-1, 1), 0, getRandomInRange(-1, 1)).scale(.1);
         this.position = position.clone();
         this.lifespan = 100;
     }
@@ -16,14 +22,18 @@ class Particle {
         this.lifespan -= 2;
     }
 
-    draw() {
+    /**
+     * Draw the object to the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
         const sideLength = Math.max(0, this.lifespan / 255);
 
-        push();
-        fill(255, 0, 0);
-        translate(...this.position.toArray());
-        box(sideLength, sideLength, sideLength);
-        pop();
+        p.push();
+        p.fill(255, 0, 0);
+        p.translate(...this.position.toArray());
+        p.box(sideLength, sideLength, sideLength);
+        p.pop();
     }
 
     get dead() {
@@ -52,9 +62,13 @@ export default class BloodSystem {
             this.particles.push(new Particle(spawnPos));
     }
 
-    draw() {
+    /**
+     * Draw the object to the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
         for (let i = 0; i < this.particles.length; i++) {
-            this.particles[i].draw();
+            this.particles[i].draw(p);
         }
     }
 }

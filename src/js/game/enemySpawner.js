@@ -1,4 +1,4 @@
-import { Vec3 } from "../vendor/cannon-es.js";
+import { Vec3 } from "cannon-es";
 
 const MAX_ENEMIES_START = 2;
 const ENEMY_SPAWN_LOCATIONS = [
@@ -14,7 +14,7 @@ const RANGE_TO_KILL_TREE = 6;
 
 const TEXT_BANNER = document.getElementById("textBanner");
 function updateKillCount(count) {
-    TEXT_BANNER.innerHTML = `Don't let the zombies reach the special tree!<br>${count} KILLED`;
+    TEXT_BANNER.innerHTML = `Destroy the zombies reach the special tree!<br>${count} KILLED`;
 }
 
 function showGameOverScreen(endCount) {
@@ -27,9 +27,6 @@ function showGameOverScreen(endCount) {
 
 export default class EnemySpawner {
     constructor(physWorld, constructFunction, onGameOver) {
-        // Preload font for paragraph tags.
-        this.displayFont = loadFont('./assets/Larceny.ttf');
-
         this.createEnemy = constructFunction;
         this.enemies = [];
         this.onGameOver = onGameOver;
@@ -42,7 +39,13 @@ export default class EnemySpawner {
         this.tempJitter = new Vec3();
     }
 
-    update() {
+    /**
+     * Update enemy spawning.
+     * @param {p5} p Processing instance.
+     * @param {number} elapsedTime Total time elapsed in the simulation.
+     */
+
+    update(p, elapsedTime) {
         this.enemies.forEach(thisEnemy => {
             if (thisEnemy.alive) {
                 // If enemy is alive...
@@ -70,23 +73,27 @@ export default class EnemySpawner {
         });
 
         // Increase the maximum enemy cap over time. Extra enemy every 9 seconds.
-        const maxEnemiesAdjusted = MAX_ENEMIES_START + Math.floor(frameCount / 60 / 9);
+        const maxEnemiesAdjusted = MAX_ENEMIES_START + Math.floor(elapsedTime / 9);
         if (maxEnemiesAdjusted > this.enemies.length) {
             // Pick a random location. Add some jitter to prevent spawning bodies inside other bodies.
             const randomSpawnPosition = ENEMY_SPAWN_LOCATIONS[Math.floor(Math.random() * ENEMY_SPAWN_LOCATIONS.length)];
             this.tempJitter.set((Math.random() - .5) * 5, 0, (Math.random() - .5) * 5);
 
             // Adjust movement speed that enemies get faster over time.
-            const moveSpeed = MOVEMENT_SPEED_START + Math.floor(frameCount / 60 / 7.5);
+            const moveSpeed = MOVEMENT_SPEED_START + Math.floor(elapsedTime / 7.5);
 
             this.enemies.push(this.createEnemy(randomSpawnPosition.vadd(this.tempJitter), moveSpeed));
         }
     }
 
-    draw() {
+    /**
+     * Draw enemies the screen.
+     * @param {p5} p Processing instance.
+     */
+    draw(p) {
         this.enemies.forEach(enemy => {
             enemy.update();
-            enemy.draw();
+            enemy.draw(p);
         });
     }
 }

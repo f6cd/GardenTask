@@ -1,4 +1,4 @@
-import { Cylinder } from "../vendor/cannon-es.js";
+import { Cylinder } from "cannon-es";
 import createGenericBody from "./createGenericBody.js";
 
 export default class CylinderCollider {

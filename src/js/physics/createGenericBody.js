@@ -1,4 +1,4 @@
-import { Body } from "../vendor/cannon-es.js";
+import { Body } from "cannon-es";
 
 export default function createGenericBody(colShape, mass, pos) {
     const body = new Body({

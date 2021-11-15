@@ -1,4 +1,4 @@
-import { Plane, Vec3 } from "../vendor/cannon-es.js";
+import { Plane, Vec3 } from "cannon-es";
 import createGenericBody from "./createGenericBody.js";
 
 export default class PlaneCollider {

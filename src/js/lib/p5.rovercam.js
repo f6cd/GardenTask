@@ -26,7 +26,8 @@
  * Lots of unused code has been removed.
  */
 
-import { Vec3, Quaternion } from "./cannon-es.js";
+import { Vec3, Quaternion } from "cannon-es";
+import p5 from "p5";
 
 const CAMERA_NEAR_Z = 0.01;
 const CAMERA_FAR_Z = 250;
@@ -71,21 +72,24 @@ export default class RoverCam {
         this._cachedWidth = 0; // trigger a perspective call in the draw loop
     }
 
-    update() {
-        // 'width' and 'height' are poorly named p5 globals that hold the width+height of the canvas.
-        if (width !== this._cachedWidth || height !== this._cachedHeight) {
-            console.log("perspective");
-            perspective(this.fovy, width / height, CAMERA_NEAR_Z, CAMERA_FAR_Z);
-            this._cachedWidth = width;
-            this._cachedHeight = height;
+    /**
+     * Update camera looking.
+     * @param {p5} p Processing instance.
+     */
+    update(p) {
+        // 'width' and 'height' are poorly named p5 properties that hold the width+height of the canvas.
+        if (p.width !== this._cachedWidth || p5.height !== this._cachedHeight) {
+            p.perspective(this.fovy, p.width / p.height, CAMERA_NEAR_Z, CAMERA_FAR_Z);
+            this._cachedWidth = p.width;
+            this._cachedHeight = p.height;
         }
 
         const viewQuaternion = new Quaternion().setFromEuler(0, this.yRotation, this.xRotation, "XYZ");
         viewQuaternion.vmult(Vec3.UNIT_X, this.forward);
         viewQuaternion.vmult(Vec3.UNIT_Y, this.up);
 
-        const center = this.position.vadd(this.forward);
+        const center = this.position.vadd(this.forward.scale(10000));
 
-        camera(this.position.x, this.position.y, this.position.z, center.x, center.y, center.z, this.up.x, this.up.y, this.up.z);
+        p.camera(this.position.x, this.position.y, this.position.z, center.x, center.y, center.z, this.up.x, this.up.y, this.up.z);
     }
 }

@@ -1,21 +1,30 @@
 import Scene from "./scene.js";
+import p5 from "p5";
 
-window.setup = function () {
-    // I didn't want to add this, but webpack excludes globals (like p5) if they're not referenced anywhere!
-    if (!p5) console.error("p5.js not loaded!");
+// See: https://p5js.org/examples/instance-mode-instantiation.html.
 
-    // Setup canvas
-    const canvasRenderer = createCanvas(windowWidth, windowHeight, WEBGL);
-    canvasRenderer.parent('sketch-holder');
-    noStroke();
+/**
+ * Init the sketch!
+ * @param {p5} p Processing instance. 
+ */
+function createSketch(p) {
+    p.setup = () => {
+        // Setup canvas
+        const canvasRenderer = p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
+        canvasRenderer.parent('sketch-holder');
+        p.noStroke();
 
-    // Setup scene.
-    const thisScene = new Scene(canvasRenderer);
-    
-    thisScene.setup();
-    window.draw = () => thisScene.draw();
-};
+        // Setup scene.
+        const thisScene = new Scene(p, canvasRenderer);
+        
+        thisScene.setup();
 
-window.windowResized = function () {
-    resizeCanvas(windowWidth, windowHeight);
-};
+        p.draw = () => thisScene.draw();        
+    }
+
+    p.windowResized = () => {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+    }
+}
+
+new p5(createSketch);

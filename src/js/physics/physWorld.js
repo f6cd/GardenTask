@@ -1,4 +1,4 @@
-import { World, NaiveBroadphase } from "../vendor/cannon-es.js";
+import { World, NaiveBroadphase } from "cannon-es";
 
 export default class PhysWorld {
     constructor() {
@@ -8,10 +8,10 @@ export default class PhysWorld {
         world.solver.iterations = 20;
 
         // Tweak contact properties.
-        // Contact stiffness - use to make softer/harder contacts
+        // Contact stiffness - use to make softer/harder contacts.
         world.defaultContactMaterial.contactEquationStiffness = 1e7;
 
-        // Stabilization time in number of timesteps
+        // Stabilization time in number of timesteps.
         world.defaultContactMaterial.contactEquationRelaxation = 5;
 
         this.world = world;

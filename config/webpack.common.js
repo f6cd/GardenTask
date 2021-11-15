@@ -42,9 +42,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: paths.src + "/index.html",
         }),
-        new webpack.ProvidePlugin({
-            p5: paths.src + "/js/vendor/p5.js",
-        }),
         new CopyWebpackPlugin({
             patterns: [{
                 from: paths.assets,

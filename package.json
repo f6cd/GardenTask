@@ -22,7 +22,9 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "cannon-es": "^0.18.0",
     "html-webpack-plugin": "^5.5.0",
+    "p5": "^1.4.0",
     "webpack": "^5.62.2"
   }
 }

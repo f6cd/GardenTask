@@ -1,4 +1,4 @@
-import { Trimesh } from "../vendor/cannon-es.js";
+import { Trimesh } from "cannon-es";
 
 export default function getTrimesh(p5Model) {
     const vertices = [];
