@@ -14,7 +14,7 @@ const RANGE_TO_KILL_TREE = 6;
 
 const TEXT_BANNER = document.getElementById("textBanner");
 function updateKillCount(count) {
-    TEXT_BANNER.innerHTML = `Destroy the zombies reach the special tree!<br>${count} KILLED`;
+    TEXT_BANNER.innerHTML = `Destroy zombies before they reach the special tree!<br>${count} KILLED`;
 }
 
 function showGameOverScreen(endCount) {
