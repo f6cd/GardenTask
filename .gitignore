@@ -46,7 +46,7 @@
 # -----------------------------------------------------------------
 
 # ignore all files starting with . or ~
-.*
+#.*
 ~*
 
 # ignore node/grunt dependency directories
@@ -108,5 +108,7 @@ Thumbs.db
 !.phpcs.xml.dist
 !.env.example
 !.eslintrc.*
+
+.vscode
 
 dist/
