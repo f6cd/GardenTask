@@ -29,6 +29,8 @@
 import { Vec3, Quaternion } from "cannon-es";
 import p5 from "p5";
 
+const CONTROLS_BANNER = document.getElementById("controlsBanner")
+
 const CAMERA_NEAR_Z = 0.01;
 const CAMERA_FAR_Z = 250;
 
@@ -41,7 +43,7 @@ export default class RoverCam {
         this.up = new Vec3();
         this.position = new Vec3();
 
-        document.addEventListener('mousemove', (event) => {
+        document.addEventListener("mousemove", (event) => {
             if (!this.pointerLock) return;
 
             const { movementX, movementY } = event;
@@ -52,13 +54,16 @@ export default class RoverCam {
             this.xRotation = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.xRotation));
         });
 
-        canvasRenderer.elt.addEventListener('click', () => {
+        const attemptFocusHandler = () => {
             if (!this.pointerLock) {
                 document.body.requestPointerLock();
             }
-        });
+        }
 
-        document.addEventListener('pointerlockchange', () => {
+        canvasRenderer.elt.addEventListener("click", attemptFocusHandler);
+        CONTROLS_BANNER.addEventListener("click", attemptFocusHandler);
+
+        document.addEventListener("pointerlockchange", () => {
             if (document.pointerLockElement) {
                 this.pointerLock = true;
             } else {
@@ -91,5 +96,10 @@ export default class RoverCam {
         const center = this.position.vadd(this.forward.scale(10000));
 
         p.camera(this.position.x, this.position.y, this.position.z, center.x, center.y, center.z, this.up.x, this.up.y, this.up.z);
+    }
+
+    drawControlsBanner() {
+        // I imagine setting this every frame is very slow! Oh well.
+        CONTROLS_BANNER.style.display = !this.pointerLock && "flex" || "none";
     }
 }

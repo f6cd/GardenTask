@@ -51,7 +51,9 @@ export default class Scene {
             loadFont(this._p, "./assets/Larceny.ttf"),
         ])
             .then(assets => {
-                const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin] = assets;
+                const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin, fontFace] = assets;
+
+                this._p.textFont(fontFace, 40);
 
                 this.objects.push(
                     // Terrain and complex collision - i.e. fences, flowers.
@@ -92,7 +94,9 @@ export default class Scene {
         // Call update, draw methods on all objects that have them.
         this.objects.forEach(obj => obj.update && obj.update(this._p, this._clock));
         this._cam.update(this._p);
-        this.objects.forEach(obj => obj.draw && obj.draw(this._p));
+        this.objects.forEach(obj => obj.draw && obj.draw(this._p, this._cam));
+
+        this._cam.drawControlsBanner();
 
         this._clock += this._p.deltaTime / 1000;
     }
