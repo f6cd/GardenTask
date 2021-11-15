@@ -1,4 +1,14 @@
 import { Vec3 } from "cannon-es";
+import p5 from "p5";
+import RoverCam from "../lib/p5.rovercam";
+
+const TREE_QUOTES = [
+    "help me!\ni fear the zombies!",
+    "thank you,\nkind stranger!",
+    "i am in\ntree-mendous-danger",
+    "they didn't want a\npeace tree-ty"
+];
+const TREE_POS = new Vec3(0, 0, 0);
 
 const MAX_ENEMIES_START = 2;
 const ENEMY_SPAWN_LOCATIONS = [
@@ -37,6 +47,8 @@ export default class EnemySpawner {
         updateKillCount(this.killCount);
 
         this.tempJitter = new Vec3();
+
+        this._treeQuote = TREE_QUOTES[0];
     }
 
     /**
@@ -44,7 +56,6 @@ export default class EnemySpawner {
      * @param {p5} p Processing instance.
      * @param {number} elapsedTime Total time elapsed in the simulation.
      */
-
     update(p, elapsedTime) {
         this.enemies.forEach(thisEnemy => {
             if (thisEnemy.alive) {
@@ -59,6 +70,8 @@ export default class EnemySpawner {
                 // If enemy is dead, but not queued or death yet...
 
                 // Horrible hack! Randomly mutating classes is bad. :(
+                // We set this flag so that we don't run death logic twice.
+                // Ideally, this would use an event based system (like Rx.js).
                 thisEnemy.queuedForDeath = true;
 
                 // Destroy enemy after a brief delay, so that we get cool physics and blood particles.
@@ -69,6 +82,8 @@ export default class EnemySpawner {
 
                 // Update count.
                 updateKillCount(++this.killCount);
+                // Get new tree quote.
+                this._treeQuote = p.random(TREE_QUOTES);
             }
         });
 
@@ -89,11 +104,26 @@ export default class EnemySpawner {
     /**
      * Draw enemies the screen.
      * @param {p5} p Processing instance.
+     * @param {RoverCam} cam User camera.
      */
-    draw(p) {
+    draw(p, cam) {
         this.enemies.forEach(enemy => {
             enemy.update();
             enemy.draw(p);
         });
+
+        const offsetFromTree = cam.position.vsub(TREE_POS);
+        const angleToCamera = Math.atan2(offsetFromTree.x, offsetFromTree.z);
+
+        // Draw text above the tree.
+        // Faces the camera like a billboard.
+        p.push();
+        p.textAlign(p.CENTER, p.BOTTOM);
+        p.angleMode(p.RADIANS);
+        p.textSize(4);
+        p.translate(...TREE_POS.vadd(new Vec3(0, -20, 0)).toArray());
+        p.rotateY(angleToCamera);
+        p.text(this._treeQuote, 0, 0);
+        p.pop();
     }
 }
