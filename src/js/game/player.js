@@ -9,7 +9,7 @@ const PLAYER_RADIUS = 72 / 64;
 const PLAYER_SHAPE = new Sphere(PLAYER_RADIUS);
 
 export default class Player {
-    constructor(physWorld, pos, camera) {
+    constructor(physWorld, pos, camera, shooter) {
         this._camera = camera;
 
         // Dimensions stolen from the source engine: https://developer.valvesoftware.com/wiki/Player_Entity.
@@ -29,7 +29,7 @@ export default class Player {
         this._body = body;
 
         // Shooting logic.
-        this._shooter = new Shooter(physWorld);
+        this._shooter = shooter;
         window.addEventListener('click', () => {
             // Shoot a projectile.
             this._shooter.fire(this._body.position, this._camera.forward, body.velocity);

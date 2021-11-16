@@ -11,6 +11,7 @@ import Terrain from "./game/terrain.js";
 
 import { loadModelPromise, loadImagePromise, loadFont } from "./lib/assets.js";
 import p5 from "p5";
+import Shooter from "./game/shooter.js";
 
 export default class Scene {
     /**
@@ -31,12 +32,6 @@ export default class Scene {
 
     setup() {
         this.objects = [
-            // Player object and collision.
-            new Player(
-                this._phys,
-                new Vec3(10, 0, 0),
-                this._cam,
-            ),
             // Ground collision.
             new PlaneCollider(this._phys, new Vec3()),
             // Centre tree collision.
@@ -48,18 +43,21 @@ export default class Scene {
             loadModelPromise(this._p, "./assets/island_fence_collide.obj"),
             loadModelPromise(this._p, "./assets/basicCharacter.obj"),
             loadImagePromise(this._p, "./assets/skin_exclusiveZombie.png"),
+            loadModelPromise(this._p, "./assets/flower.obj"),
             loadFont(this._p, "./assets/Larceny.ttf"),
         ])
             .then(assets => {
-                const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin, fontFace] = assets;
+                const [paletteTexture, islandModel, islandComplexCollision, kenneyCharacter, kenneyZombieSkin, flowerModel, fontFace] = assets;
 
                 this._p.textFont(fontFace, 40);
 
+                // Terrain object.
                 this.objects.push(
                     // Terrain and complex collision - i.e. fences, flowers.
                     new Terrain(this._phys, Vec3.ZERO, islandModel, islandComplexCollision, paletteTexture)
                 );
 
+                // ENemy spawner.
                 this.objects.push(
                     new EnemySpawner(this._phys, (pos, moveSpeed) => {
                         // Spawn an enemy.
@@ -69,6 +67,16 @@ export default class Scene {
                         this._sceneReady = false;
                     })
                 );
+
+                // Player object.
+                this.objects.push(
+                    new Player(
+                        this._phys,
+                        new Vec3(10, 0, 0),
+                        this._cam,
+                        new Shooter(this._phys, flowerModel, paletteTexture)
+                    )
+                )
             })
             .then(() => this._sceneReady = true);
 

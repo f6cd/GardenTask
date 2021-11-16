@@ -1,13 +1,9 @@
 import { Vec3 } from "cannon-es";
 import p5 from "p5";
+import getRandomInRange from "../lib/getRandomInRange";
 
 const MAX_PARTICLES = 200;
 const GLOBAL_ACCELERATION = new Vec3(0, 0.002);
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_number_between_two_values
-function getRandomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-}
 
 class Particle {
     constructor(position) {
