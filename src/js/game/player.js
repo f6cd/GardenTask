@@ -52,7 +52,7 @@ export default class Player {
                 tempContactNormal.copy(contact.ni);
             }
 
-            console.log(tempContactNormal.dot(Vec3.UNIT_Y));
+            // Negative, as Y axis is inverted. (-Y up).
             if (tempContactNormal.dot(Vec3.UNIT_Y) < -0.5) {
                 this._canJump = true;
             }
